@@ -1,1 +1,37 @@
+#include <GL/glut.h>
 
+// Translation values
+float tx = 0.5f, ty = 0.3f;
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Original triangle (RED)
+    glColor3f(1.0, 0.0, 0.0);
+    glBegin(GL_TRIANGLES);
+        glVertex2f(-0.5, -0.5);
+        glVertex2f( 0.5, -0.5);
+        glVertex2f( 0.0,  0.5);
+    glEnd();
+
+    // Translated triangle (GREEN)
+    glColor3f(0.0, 1.0, 0.0);
+    glBegin(GL_TRIANGLES);
+        glVertex2f(-0.5 + tx, -0.5 + ty);
+        glVertex2f( 0.5 + tx, -0.5 + ty);
+        glVertex2f( 0.0 + tx,  0.5 + ty);
+    glEnd();
+
+    glFlush();
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(600, 600);
+    glutCreateWindow("Triangle Translation in OpenGL");
+
+    glutDisplayFunc(display);
+    glutMainLoop();
+    return 0;
+}
