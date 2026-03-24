@@ -1,0 +1,105 @@
+#include <iostream>
+#include <cmath>
+#include <graphics.h>
+using namespace std;
+
+struct Point3D {
+    float x, y, z;
+};
+
+// Apply 4x4 matrix to a point
+Point3D applyMatrix(float M[4][4], Point3D p) {
+    Point3D result;
+    result.x = M[0][0]*p.x + M[0][1]*p.y + M[0][2]*p.z + M[0][3];
+    result.y = M[1][0]*p.x + M[1][1]*p.y + M[1][2]*p.z + M[1][3];
+    result.z = M[2][0]*p.x + M[2][1]*p.y + M[2][2]*p.z + M[2][3];
+    return result;
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "");
+
+    Point3D p;
+    float tx, ty, tz, sx, sy, sz, angle;
+
+    // User input
+    cout << "Enter point coordinates (x y z): ";
+    cin >> p.x >> p.y >> p.z;
+
+    cout << "Enter translation values (tx ty tz): ";
+    cin >> tx >> ty >> tz;
+
+    cout << "Enter scaling factors (sx sy sz): ";
+    cin >> sx >> sy >> sz;
+
+    cout << "Enter rotation angle (in degrees): ";
+    cin >> angle;
+
+    float theta = angle * M_PI / 180.0; // convert to radians
+
+    // Translation matrix
+    float T[4][4] = {
+        {1, 0, 0, tx},
+        {0, 1, 0, ty},
+        {0, 0, 1, tz},
+        {0, 0, 0, 1}
+    };
+
+    // Scaling matrix
+    float S[4][4] = {
+        {sx, 0, 0, 0},
+        {0, sy, 0, 0},
+        {0, 0, sz, 0},
+        {0, 0, 0, 1}
+    };
+
+    // Rotation matrices
+    float Rx[4][4] = {
+        {1, 0, 0, 0},
+        {0, cos(theta), -sin(theta), 0},
+        {0, sin(theta), cos(theta), 0},
+        {0, 0, 0, 1}
+    };
+
+    float Ry[4][4] = {
+        {cos(theta), 0, sin(theta), 0},
+        {0, 1, 0, 0},
+        {-sin(theta), 0, cos(theta), 0},
+        {0, 0, 0, 1}
+    };
+
+    float Rz[4][4] = {
+        {cos(theta), -sin(theta), 0, 0},
+        {sin(theta), cos(theta), 0, 0},
+        {0, 0, 1, 0},
+        {0, 0, 0, 1}
+    };
+
+    // Apply transformations
+    Point3D pT = applyMatrix(T, p);
+    Point3D pS = applyMatrix(S, p);
+    Point3D pRx = applyMatrix(Rx, p);
+    Point3D pRy = applyMatrix(Ry, p);
+    Point3D pRz = applyMatrix(Rz, p);
+
+    // Console output
+    cout << "\nOriginal: (" << p.x << ", " << p.y << ", " << p.z << ")\n";
+    cout << "Translated: (" << pT.x << ", " << pT.y << ", " << pT.z << ")\n";
+    cout << "Scaled: (" << pS.x << ", " << pS.y << ", " << pS.z << ")\n";
+    cout << "Rotated X: (" << pRx.x << ", " << pRx.y << ", " << pRx.z << ")\n";
+    cout << "Rotated Y: (" << pRy.x << ", " << pRy.y << ", " << pRy.z << ")\n";
+    cout << "Rotated Z: (" << pRz.x << ", " << pRz.y << ", " << pRz.z << ")\n";
+
+    // Graphics visualization
+    putpixel(p.x, p.y, WHITE);   // Original point
+    putpixel(pT.x, pT.y, RED);   // Translated
+    putpixel(pS.x, pS.y, GREEN); // Scaled
+    putpixel(pRx.x, pRx.y, BLUE);// Rotated X
+    putpixel(pRy.x, pRy.y, YELLOW);// Rotated Y
+    putpixel(pRz.x, pRz.y, CYAN);// Rotated Z
+
+    getch();
+    closegraph();
+    return 0;
+}
