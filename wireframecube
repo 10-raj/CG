@@ -1,0 +1,48 @@
+#include <iostream>
+#include <graphics.h>
+using namespace std;
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "");
+
+    int x, y, w, h, d;
+    cout << "Enter starting point (x y): ";
+    cin >> x >> y;
+    cout << "Enter width, height, depth: ";
+    cin >> w >> h >> d;
+
+    // Front face vertices
+    int x1 = x, y1 = y;
+    int x2 = x + w, y2 = y;
+    int x3 = x + w, y3 = y + h;
+    int x4 = x, y4 = y + h;
+
+    // Back face vertices (shifted by depth)
+    int x5 = x1 + d, y5 = y1 - d;
+    int x6 = x2 + d, y6 = y2 - d;
+    int x7 = x3 + d, y7 = y3 - d;
+    int x8 = x4 + d, y8 = y4 - d;
+
+    // Draw front face
+    line(x1, y1, x2, y2);
+    line(x2, y2, x3, y3);
+    line(x3, y3, x4, y4);
+    line(x4, y4, x1, y1);
+
+    // Draw back face
+    line(x5, y5, x6, y6);
+    line(x6, y6, x7, y7);
+    line(x7, y7, x8, y8);
+    line(x8, y8, x5, y5);
+
+    // Connect front and back faces
+    line(x1, y1, x5, y5);
+    line(x2, y2, x6, y6);
+    line(x3, y3, x7, y7);
+    line(x4, y4, x8, y8);
+
+    getch();
+    closegraph();
+    return 0;
+}
